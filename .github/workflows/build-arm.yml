@@ -1,0 +1,26 @@
+name: build pty linux arm (armv7)
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (this fork)
+        uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+      - name: Build linux/arm (armv7, soft/hard float)
+        run: |
+          export GOARCH=arm GOARM=7 CGO_ENABLED=0
+          go build -o pty_linux_arm .
+          file pty_linux_arm
+          ls -la pty_linux_arm
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pty_linux_arm
+          path: pty_linux_arm
